@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>Сообщество видео</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header>
+  <h1>Сообщество видео</h1>
+  <nav>
+    <a href="upload.html">Загрузить видео</a>
+  </nav>
+</header>
+<div class="container">
+  <div class="video-grid" id="videoGrid"></div>
+</div>
+
+<script>
+  function loadVideos() {
+    const grid = document.getElementById('videoGrid');
+    grid.innerHTML = '';
+    const videos = JSON.parse(localStorage.getItem('communityVideos')) || [];
+    if (videos.length === 0) {
+      grid.innerHTML = '<p style="padding:20px;text-align:center;">Нет видео в сообществе. Загрузите новые!</p>';
+      return;
+    }
+    videos.forEach(({videoURL, author}) => {
+      const card = document.createElement('div');
+      card.className = 'video-card';
+      
+      const video = document.createElement('video');
+      video.controls = true;
+      video.src = videoURL;
+
+      const authorDiv = document.createElement('div');
+      authorDiv.className = 'author-info';
+      authorDiv.innerHTML = `<span>Автор:</span> ${author}`;
+
+      card.appendChild(video);
+      card.appendChild(authorDiv);
+      grid.appendChild(card);
+    });
+  }
+
+  window.onload = loadVideos;
+</script>
+</body>
+</html>

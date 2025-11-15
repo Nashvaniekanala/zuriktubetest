@@ -17,32 +17,44 @@
 </div>
 
 <script>
-  function loadVideos() {
-    const grid = document.getElementById('videoGrid');
-    grid.innerHTML = '';
-    const videos = JSON.parse(localStorage.getItem('communityVideos')) || [];
-    if (videos.length === 0) {
-      grid.innerHTML = '<p style="padding:20px;text-align:center;">Нет видео в сообществе. Загрузите новые!</p>';
-      return;
-    }
-    videos.forEach(({videoURL, author}) => {
-      const card = document.createElement('div');
-      card.className = 'video-card';
-      
+function loadVideos() {
+  const grid = document.getElementById('videoGrid');
+  grid.innerHTML = '';
+  const videos = JSON.parse(localStorage.getItem('communityVideos')) || [];
+  if (videos.length === 0) {
+    grid.innerHTML = '<p style="padding:20px;text-align:center;">Нет видео в сообществе. Загрузите новые!</p>';
+    return;
+  }
+  videos.forEach(({videoURL, author}) => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+
+    const isYouTube = videoURL.includes('youtube.com') || videoURL.includes('youtu.be');
+
+    if (isYouTube) {
+      const iframe = document.createElement('iframe');
+      iframe.src = videoURL;
+      iframe.width = '100%';
+      iframe.height = '240'; // или другую высоту
+      iframe.allowFullscreen = true;
+      iframe.frameBorder = '0';
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      card.appendChild(iframe);
+    } else {
       const video = document.createElement('video');
       video.controls = true;
       video.src = videoURL;
-
-      const authorDiv = document.createElement('div');
-      authorDiv.className = 'author-info';
-      authorDiv.innerHTML = `<span>Автор:</span> ${author}`;
-
       card.appendChild(video);
-      card.appendChild(authorDiv);
-      grid.appendChild(card);
-    });
-  }
+    }
 
+    const authorDiv = document.createElement('div');
+    authorDiv.className = 'author-info';
+    authorDiv.innerHTML = `<span>Автор:</span> ${author}`;
+
+    card.appendChild(authorDiv);
+    grid.appendChild(card);
+  });
+}
   window.onload = loadVideos;
 </script>
 </body>
